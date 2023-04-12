@@ -1,14 +1,14 @@
 package adet.musicapp.t210.gamo;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.annotation.SuppressLint;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ public class MusicPlayerActivity extends AppCompatActivity {
     ArrayList<AudioModel> songsList;
     AudioModel currentSong;
     MediaPlayer mediaPlayer = MyMediaPlayer.getInstance();
-    int x=0;
+    int x = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,8 +84,6 @@ public class MusicPlayerActivity extends AppCompatActivity {
 
             }
         });
-
-
     }
 
     void setResourcesWithMusic(){
@@ -105,7 +103,6 @@ public class MusicPlayerActivity extends AppCompatActivity {
     }
 
     private void playMusic(){
-
         mediaPlayer.reset();
         try {
             mediaPlayer.setDataSource(currentSong.getPath());
@@ -113,10 +110,19 @@ public class MusicPlayerActivity extends AppCompatActivity {
             mediaPlayer.start();
             seekBar.setProgress(0);
             seekBar.setMax(mediaPlayer.getDuration());
+
+            mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    playNextSong();
+                }
+            });
+
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
 
     private void playNextSong(){
 
@@ -143,6 +149,7 @@ public class MusicPlayerActivity extends AppCompatActivity {
     }
 
 
+    @SuppressLint("DefaultLocale")
     public static String convertToMMSS(String duration){
         Long millis = Long.parseLong(duration);
         return String.format("%02d:%02d",
